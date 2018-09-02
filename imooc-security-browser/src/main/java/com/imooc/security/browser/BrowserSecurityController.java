@@ -61,22 +61,40 @@ public class BrowserSecurityController extends SocialController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL)
+	@RequestMapping(value = SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,produces = "text/html")
 	@ResponseStatus(code = HttpStatus.UNAUTHORIZED)
-	public SimpleResponse requireAuthentication(HttpServletRequest request, HttpServletResponse response)
+	public void requireAuthenticationForHtml(HttpServletRequest request, HttpServletResponse response)
 			throws IOException {
 
 		SavedRequest savedRequest = requestCache.getRequest(request, response);
 
+		/*if (savedRequest != null) {
+			String targetUrl = savedRequest.getRedirectUrl();
+			logger.info("引发跳转的请求是:" + targetUrl);
+			if (StringUtils.endsWithIgnoreCase(targetUrl, ".html")) {
+
+			}
+		}*/
+
+		redirectStrategy.sendRedirect(request, response, securityProperties.getBrowser().getSignInPage());
+		//return new SimpleResponse("访问的服务需要身份认证，请引导用户到登录页");
+	}
+
+
+	@RequestMapping(value = SecurityConstants.DEFAULT_UNAUTHENTICATION_URL)
+	@ResponseStatus(code = HttpStatus.UNAUTHORIZED)
+	public SimpleResponse requireAuthentication(HttpServletRequest request, HttpServletResponse response)
+			throws IOException {
+
+		/*SavedRequest savedRequest = requestCache.getRequest(request, response);
 		if (savedRequest != null) {
 			String targetUrl = savedRequest.getRedirectUrl();
 			logger.info("引发跳转的请求是:" + targetUrl);
 			if (StringUtils.endsWithIgnoreCase(targetUrl, ".html")) {
 				redirectStrategy.sendRedirect(request, response, securityProperties.getBrowser().getSignInPage());
 			}
-		}
-
-		return new SimpleResponse("访问的服务需要身份认证，请引导用户到登录页");
+		}*/
+		return new SimpleResponse(HttpStatus.UNAUTHORIZED.value(),"访问的服务需要身份认证，请引导用户到登录页"+SecurityConstants.DEFAULT_UNAUTHENTICATION_URL);
 	}
 
 	/**

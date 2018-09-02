@@ -50,5 +50,6 @@
 		<module>../imooc-security-core</module>
 		<module>../imooc-security-demo</module>
 		<module>../imooc-security-authorize</module>
+		<module>../imooc-security-wordpress</module>
 	</modules>
 </project>
